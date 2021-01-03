@@ -6,13 +6,6 @@ struct Person: Codable {
     let isDeveloper: Bool
 }
 
-struct PersonRootDecodableType1: Codable {
-    let data: [Person]
-}
-
-struct PersonRootDecodableType2: Codable {
-    let result: [Person]
-}
 
 protocol ResponsePersonsHandler {
     var next: ResponsePersonsHandler? { get set }
@@ -23,6 +16,11 @@ class DataToPersonHander1: ResponsePersonsHandler {
     var next: ResponsePersonsHandler?
     func decodeDataToPersons(from data: Data) -> [Person]? {
         let decoder = JSONDecoder()
+        
+        struct PersonRootDecodableType1: Codable {
+            let data: [Person]
+        }
+        
         do {
         let persons: PersonRootDecodableType1 = try decoder.decode(PersonRootDecodableType1.self, from: data)
             return persons.data
@@ -37,6 +35,11 @@ class DataToPersonHander2: ResponsePersonsHandler {
     var next: ResponsePersonsHandler?
     func decodeDataToPersons(from data: Data) -> [Person]? {
         let decoder = JSONDecoder()
+        
+        struct PersonRootDecodableType2: Codable {
+            let result: [Person]
+        }
+        
         do {
         let persons: PersonRootDecodableType2 = try decoder.decode(PersonRootDecodableType2.self, from: data)
             return persons.result
@@ -67,8 +70,6 @@ func data(from file: String) -> Data {
     let data = try! Data(contentsOf: url)
     return data
 }
-
-
 
 
 let dataToPersonHander1 = DataToPersonHander1()
